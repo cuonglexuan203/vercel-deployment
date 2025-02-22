@@ -1,0 +1,8 @@
+I want to create an simple app to demo the flow of passing cookies from server to client with the follwing features:
+- Server using Express
+- Frontend using Next.js (app router)
+- FE and BE is on different domains (both of them gonna host on vercel)
+- Cookies are: httpOnly, secure, sameSite: none
+
+I want FE will have a button, when clicking on the button, it will send a request to BE, and BE will send a response with cookies, and FE will get the cookies from the response and show cookies in a popup window.
+Please create the express server in express-server folder and the nextjs app in nextjs-client folder.
