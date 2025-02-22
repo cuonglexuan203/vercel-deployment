@@ -26,8 +26,8 @@ app.use(cors({
 app.get('/api/set-cookie', (req, res) => {
   // Set a test cookie
   res.cookie('testCookie', 'Hello from Express Server!', {
-    httpOnly: true,
-    secure: true,
+    // httpOnly: true,
+    // secure: true,
     sameSite: 'none',
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     path: '/', // Ensure cookie is available for entire domain
