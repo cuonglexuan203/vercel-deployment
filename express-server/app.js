@@ -25,14 +25,21 @@ app.use(cors({
 
 app.get('/api/set-cookie', (req, res) => {
   // Set a test cookie
-  res.cookie('testCookie', 'Hello from Express Server!', {
-    // httpOnly: true,
-    // secure: true,
+  const cookieOptions = {
+    httpOnly: true,
+    secure: true,
     sameSite: 'none',
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    path: '/', // Ensure cookie is available for entire domain
-    domain: process.env.COOKIE_DOMAIN // Add this if needed for cross-domain
-  });
+    path: '/'
+  };
+
+  // Only set domain in production
+  if (process.env.NODE_ENV === 'production') {
+    // Use the client's domain for the cookie
+    cookieOptions.domain = 'vercel-deployment-ecru-psi.vercel.app';
+  }
+
+  res.cookie('testCookie', 'Hello from Express Server!', cookieOptions);
 
   res.json({ 
     message: 'Cookie has been set!',
