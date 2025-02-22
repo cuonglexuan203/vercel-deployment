@@ -1,26 +1,53 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
   const [message, setMessage] = useState<string>('')
+  const [hasCookie, setHasCookie] = useState<boolean>(false)
 
-  const handleGetCookie = async () => {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+
+  // Check for cookie on page load
+  useEffect(() => {
+    checkCookie()
+  }, [])
+
+  const checkCookie = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/set-cookie`, {
+      const response = await fetch(`${API_URL}/api/check-cookie`, {
         credentials: 'include',
       })
       const data = await response.json()
       
-      // Show message in popup
-      alert(data.message)
+      if (data.hasCookie) {
+        setMessage('Cookie is present!')
+        setHasCookie(true)
+      } else {
+        setMessage('No cookie found')
+        setHasCookie(false)
+      }
+    } catch (error) {
+      console.error('Error checking cookie:', error)
+      setMessage('Error checking cookie')
+    }
+  }
+
+  const handleGetCookie = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/set-cookie`, {
+        credentials: 'include',
+      })
+      const data = await response.json()
       
-      // You won't be able to see the cookie value directly in JavaScript
-      // because it's httpOnly, but you can see it in browser dev tools
-      setMessage('Check your browser dev tools to see the cookie!')
+      if (data.success) {
+        alert(data.message)
+        setHasCookie(true)
+        setMessage('Cookie has been set! Check your browser dev tools to see it.')
+      }
     } catch (error) {
       console.error('Error:', error)
-      setMessage('Error getting cookie')
+      setMessage('Error setting cookie')
     }
   }
 
@@ -31,9 +58,13 @@ export default function Home() {
           onClick={handleGetCookie}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          Get Cookie from Server
+          {hasCookie ? 'Refresh Cookie' : 'Get Cookie from Server'}
         </button>
-        {message && <p>{message}</p>}
+        {message && (
+          <p className={`text-${hasCookie ? 'green' : 'red'}-600`}>
+            {message}
+          </p>
+        )}
       </div>
     </main>
   )

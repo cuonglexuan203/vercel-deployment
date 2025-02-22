@@ -29,10 +29,24 @@ app.get('/api/set-cookie', (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    path: '/', // Ensure cookie is available for entire domain
+    domain: process.env.COOKIE_DOMAIN // Add this if needed for cross-domain
   });
 
-  res.json({ message: 'Cookie has been set!' });
+  res.json({ 
+    message: 'Cookie has been set!',
+    success: true 
+  });
+});
+
+// Add a route to check if cookie exists
+app.get('/api/check-cookie', (req, res) => {
+  const hasCookie = req.cookies.testCookie ? true : false;
+  res.json({ 
+    hasCookie,
+    cookieValue: req.cookies.testCookie 
+  });
 });
 
 // catch 404 and forward to error handler
